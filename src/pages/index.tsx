@@ -19,7 +19,7 @@ import {
   Button
 } from '@material-ui/core';
 
-export interface HomeProps {
+export interface SearchProps {
   makes: Make[];
   models: Model[];
 }
@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
 
 const prices = [500, 1000, 5000, 15000, 25000, 50000, 2500000];
 
-export default function Home({ makes, models }: HomeProps) {
+export default function Search({ makes, models }: SearchProps) {
   const classes = useStyles();
 
   const { query } = useRouter();
@@ -49,7 +49,7 @@ export default function Home({ makes, models }: HomeProps) {
   return (
     <Formik initialValues={initialValues} onSubmit={(values) => {
       router.push({
-        pathname: '/',
+        pathname: '/cars',
         query: { ...values, page: 1 }
       }, undefined, { shallow: true })
     }}>
@@ -153,6 +153,7 @@ export function ModelSelect({models, make, ...props}: ModelSelectProps) {
   });
 
   const { data } = useSWR<Model[]>(`/api/models?make=${make}`, {
+    dedupingInterval: 60000,
     onSuccess: (newValues) => {
       if (!newValues.map(a => a.model).includes(field.value)) {
         setFieldValue('model', 'all');
